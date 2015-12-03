@@ -22,6 +22,12 @@ Public Const PROJECT_MEASURE_COLUMN = "I"
 Public Const PROJECT_UNIT_COLUMN = "G"
 Public Const PROJECT_MULTIPLYER_COLUMN = "H" 'Num of takeoff per unit
 Public Const PROJECT_DATA_BEGIN = 6
+Public Const PROJECT_FLOOR_NAMES_ROW = 4
+Public Const PROJECT_FLOOR_1_NAME_COLUMN = "L"
+Public Const PROJECT_FLOOR_2_NAME_COLUMN = "O"
+Public Const PROJECT_FLOOR_3_NAME_COLUMN = "R"
+Public Const PROJECT_FLOOR_4_NAME_COLUMN = "U"
+Public Const PROJECT_FLOOR_5_NAME_COLUMN = "X"
 
 Public Const MASTER_DATA_BEGIN As Integer = 5
 Public Const MASTER_PROJECT_COLUMN As String = "A"
@@ -278,8 +284,19 @@ Function TransferDataFromUnitToMaster(projectName As String)
     Dim i As Integer: Dim multi As Integer
     Dim masterRow As Integer: Dim projectRow As Integer
     Dim right As String: Dim left As String
+    Dim floor1Name As String: Dim floor2Name As String
+    Dim floor3Name As String: Dim floor4Name As String:
+    Dim floor5Name As String
+
+    floor1Name = Cells(PROJECT_FLOOR_NAMES_ROW, PROJECT_FLOOR_1_NAME_COLUMN).Value
+    floor2Name = Cells(PROJECT_FLOOR_NAMES_ROW, PROJECT_FLOOR_2_NAME_COLUMN).Value
+    floor3Name = Cells(PROJECT_FLOOR_NAMES_ROW, PROJECT_FLOOR_3_NAME_COLUMN).Value
+    floor4Name = Cells(PROJECT_FLOOR_NAMES_ROW, PROJECT_FLOOR_4_NAME_COLUMN).Value
+    floor5Name = Cells(PROJECT_FLOOR_NAMES_ROW, PROJECT_FLOOR_5_NAME_COLUMN).Value
+
     masterRow = GetNextEmptyRow(MASTER_PROJECT_COLUMN, MASTER_DATA_BEGIN, MASTER_SHEET_NAME)
     projectRow = PROJECT_DATA_BEGIN
+
     While Not Cells(projectRow, PROJECT_PART_NUM_COLUMN).Value = ""
         bR = 0: bL = 0: f1R = 0: f1L = 0: f2R = 0: f2L = 0: f3R = 0: f3L = 0: f4R = 0: f4L = 0: gR = 0: gL = 0
         j = GetEndOfSameBelowUnit(projectRow)
@@ -300,28 +317,30 @@ Function TransferDataFromUnitToMaster(projectName As String)
             gR = gR + GetGeneralRight(hand, i) * multi
             gL = gL + GetGeneralLeft(hand, i) * multi
         Next
+
         'Determine Hand
         If hand = "" Then
             right = "": left = ""
         Else
             right = HAND_RIGHT: left = HAND_LEFT
         End If
+
         'Write Data
         'Basement
-        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, right, bR, building, "B", measure)
-        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, left, bL, building, "B", measure)
+        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, right, bR, building, floor1Name, measure)
+        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, left, bL, building, floor1Name, measure)
         'First
-        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, right, f1R, building, "1", measure)
-        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, left, f1L, building, "1", measure)
+        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, right, f1R, building, floor2Name, measure)
+        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, left, f1L, building, floor2Name, measure)
         'Second
-        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, right, f2R, building, "2", measure)
-        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, left, f2L, building, "2", measure)
+        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, right, f2R, building, floor3Name, measure)
+        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, left, f2L, building, floor3Name, measure)
         'Third
-        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, right, f3R, building, "3", measure)
-        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, left, f3L, building, "3", measure)
+        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, right, f3R, building, floor4Name, measure)
+        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, left, f3L, building, floor4Name, measure)
         'Fourth
-        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, right, f4R, building, "4", measure)
-        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, left, f4L, building, "4", measure)
+        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, right, f4R, building, floor5Name, measure)
+        masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, left, f4L, building, floor5Name, measure)
         'General
         masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, "", gR, building, "General", measure)
         masterRow = masterRow + WriteRowMaster(masterRow, projectName, partNum, "", gL, building, "General", measure)
